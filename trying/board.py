@@ -4,69 +4,38 @@ import tkinter as tk
 
 
 class Board:
-    """
-    Constructor for Board objects.
-    Board objects have the following fields:
-        size: the number of tiles in each row and column of the board
-        start_tiles: the number of tiles that the board starts with
-        grid: a 2D array representing the board
-    """
     def __init__(self, size, start_tiles):
         self.size = size
         self.start_tiles = start_tiles
-        self.grid = [[None for x in range(self.size)] for y in range(self.size)]
+        self.empty = None
+        self.grid = [[self.empty for x in range(self.size)] for y in range(self.size)]
         """ randomly put 2 tiles (either 2 or 4) on the board """
         # self.init_grid()
         # self.display()
 
-    """
-    Accessor method for the grid
-    @return the field grid
-    """
     def get_grid(self):
         return self.grid
 
-    def get_highest_tile(self):
-        highest = 0
-        for row in range(self.size):
-            for col in range(self.size):
-                if self.grid[row][col] is not None and self.grid[row][col].get_value() > highest:
-                    highest = self.grid[row][col].get_value()
-
-        return highest
-
-    """ 
-    Method to initialize the grid. Adds start_tiles tiles to the board.
-    """
     def init_grid(self):
-        # add the correct number of tiles for the starting board
+        # self.grid[0][2] = Tile(2, 0, 2)
         for i in range(self.start_tiles):
             self.add_tile()
 
-    """
-    Method to add a new tile to the board.
-    Adds either a 2-tile or a 4-tile with probability 0.9 and 0.1, respectively
-    """
     def add_tile(self):
-        # generate a 2 or a 4 with correct probability
+        # print('addin')
         value = random.randint(0, 9)
         value = 2 if value < 9 else 4
 
-        # generate a random tile position to place the tile
         x = random.randint(0, self.size - 1)
         y = random.randint(0, self.size - 1)
 
-        # make sure that the tile position isn't already filled
-        while self.grid[x][y] is not None:
+        while self.grid[x][y] is not self.empty:
             x = random.randint(0, self.size - 1)
             y = random.randint(0, self.size - 1)
 
-        # place the tile
+        # x = 0
         self.grid[x][y] = Tile(value, x, y)
 
-    """
-    Method to print grid to the console in a readable way
-    """
     def display(self):
         for i in range(self.size):
             row = ""
@@ -77,52 +46,55 @@ class Board:
                     row = row + str(self.grid[i][j].get_value()).ljust(4) + "  "
             print(row)
         print()
+        # print('done')
+        # self.graphics_display()
 
-    """
-    Method to move all the tiles on the board in the designated direction. 
-    @param direction: the direction to move, can only be "left", "right", "up", "down"
-    @param turn: the turn number that the board is on 
-    @return a 3-tuple (movesMade, score, self.grid) representing the following:
-        movesMade: true if at least one tile was moved, false otherwise
-        score: the number of points earned during the turn
-        self.grid: the grid
-    """
+    def graphics_display(self):
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.grid[i][j] is None:
+                    # row = row + str(0).ljust(4) + "  "
+                    tile = tk.Label(self.window, text='0')
+                    tile.grid(column=j, row=i + 2)
+                else:
+                    # row = row + str(self.grid[i][j].get_value()).ljust(4) + "  "
+                    tile = tk.Label(self.window, text=str(self.grid[i][j].get_value()).ljust(4))
+                    tile.grid(column=j, row=i + 2)
+
+    # MAKE SURE IT DON'T ADD NO NEW TILE IF YOU AIN'T GOT NONE TO MOVE
     def move(self, direction, turn):
         score = 0
         movesMade = False
-        mergesMade = 0
+        moved = False
+        score_delta = 0
         """ direction can be "left", "right", "up", "down" """
         if direction == "left":
             for row in range(self.size):
                 for col in range(self.size):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
-                    mergesMade += merges
                     score += score_delta
         elif direction == "right":
             for row in range(self.size):
                 for col in range(self.size-1, -1, -1):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
-                    mergesMade += merges
                     score += score_delta
         elif direction == "up":
             for col in range(self.size):
                 for row in range(self.size):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
-                    mergesMade += merges
                     score += score_delta
         elif direction == "down":
             for col in range(self.size):
                 for row in range(self.size-1, -1, -1):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
-                    mergesMade += merges
                     score += score_delta
         else:
             print("poop")
@@ -131,11 +103,10 @@ class Board:
         #     movesMade = True
         # score += score_delta
 
-        return movesMade, mergesMade, score, self.grid
+        return movesMade, score, self.grid
 
     def move_tile(self, tile, direction, turn):
         moved = False
-        merges = 0
         score = 0
         if tile is not None:
             if direction == "left":
@@ -149,13 +120,12 @@ class Board:
                 new_col = i + 1
                 # print(new_col)
                 # we can merge
-                if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+                if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn:
                     self.grid[row][col] = None
                     score += tile.merge(turn)
                     tile.set_position(row, i)
                     self.grid[row][i] = tile
                     moved = True
-                    merges += 1
                     # print('we mergin')
                 # we can't merge
                 else:
@@ -180,13 +150,12 @@ class Board:
                 new_col = i - 1
                 # print(new_col)
                 # we can merge
-                if i < self.size and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+                if i < self.size and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn:
                     self.grid[row][col] = None
                     score += tile.merge(turn)
                     tile.set_position(row, i)
                     self.grid[row][i] = tile
                     moved = True
-                    merges += 1
                     # print('we mergin')
                 # we can't merge
                 else:
@@ -210,13 +179,12 @@ class Board:
                 new_row = i + 1
                 # print(new_y)
                 # we can merge
-                if i >= 0 and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+                if i >= 0 and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn:
                     self.grid[row][col] = None
                     score += tile.merge(turn)
                     tile.set_position(i, col)
                     self.grid[i][col] = tile
                     moved = True
-                    merges += 1
                     # print('we mergin')
                 # we can't merge
                 else:
@@ -240,13 +208,12 @@ class Board:
                 new_row = i - 1
                 # print(new_y)
                 # we can merge
-                if i < self.size and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+                if i < self.size and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn:
                     self.grid[row][col] = None
                     score += tile.merge(turn)
                     tile.set_position(i, col)
                     self.grid[i][col] = tile
                     moved = True
-                    merges += 1
                     # print('we mergin')
                 # we can't merge
                 else:
@@ -258,24 +225,24 @@ class Board:
                         self.grid[new_row][col] = tile
                         moved = True
                 # print('done')
-        return moved, merges, score
+        return moved, score
 
     def empty_rowcol(self, arr):
         for i in range(len(arr)):
-            if arr[i] is not None:
+            if arr[i] is not self.empty:
                 return False
         return True
 
     def full_rowcol(self, arr):
         for i in range(len(arr)):
-            if arr[i] is None:
+            if arr[i] is self.empty:
                 return False
         return True
 
     def no_merges_rowcol(self, arr):
         for i in range(len(arr)):
             for j in range(i, len(arr)):
-                if arr[j] is not None:
+                if arr[j] is not self.empty:
                     if arr[i] == arr[j]:
                         return False
                     else:
@@ -301,15 +268,12 @@ class Board:
         #     if not self.no_merges_rowcol([row[col] for row in self.board]):
         #         return False
         # return True
-        for row in range(self.size):
-            for col in range(self.size):
-                if self.grid[row][col] is not None:
-                    if col + 1 < self.size and self.grid[row][col+1] is not None:
-                        if self.grid[row][col].get_value() == self.grid[row][col+1].get_value():
-                            return False
-                    if row + 1 < self.size and self.grid[row+1][col] is not None:
-                        if self.grid[row][col].get_value() == self.grid[row+1][col].get_value():
-                            return False
+        for row in range(self.size-1):
+            for col in range(self.size-1):
+                if self.grid[row][col].get_value() == self.grid[row][col+1].get_value():
+                    return False
+                if self.grid[row][col].get_value() == self.grid[row+1][col].get_value():
+                    return False
         return True
 
     def dead(self):

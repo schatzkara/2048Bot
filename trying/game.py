@@ -1,4 +1,5 @@
 from board import Board
+from graphics import Graphics
 import keyboard
 
 
@@ -10,6 +11,7 @@ class Game:
         self.start_tiles = start_tiles
         self.board = Board(size, start_tiles)
         self.init_board()
+        self.gui = Graphics(False, self.get_board().get_grid())
         self.board.display()
 
     def init_board(self):
@@ -18,15 +20,12 @@ class Game:
     def get_board(self):
         return self.board
 
-    def get_score(self):
-        return self.score
-
     def get_turn(self):
         return self.turn
 
     def take_turn(self, direction):
         self.turn += 1
-        moved, merges, turn_score, board = self.board.move(direction, self.turn)
+        moved, turn_score, board = self.board.move(direction, self.turn)
         if moved:
             self.board.add_tile()
             self.score += turn_score

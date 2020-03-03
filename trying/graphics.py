@@ -1,49 +1,22 @@
 import tkinter as tk
-from game import Game
-from bot import Bot
+# from game import Game
+# from bot2 import Bot
+
 
 WINDOW_HEIGHT = 400
 WINDOW_WIDTH = 400
 BOARD_SIZE = 4
 INIT_TILES = 2
 
-text_color_dict = {0: '#BDAD9E',
-                   2: '#BDAD9E',
-                   4: '#ede0c8',
-                   8: '#f9f6f2',
-                   16: '#f9f6f2',
-                   32: '#f9f6f2',
-                   64: '#f9f6f2',
-                   128: '#f9f6f2',
-                   256: '#f9f6f2',
-                   512: '#f9f6f2',
-                   1024: '#f9f6f2',
-                   2048: '#f9f6f2'
-                   }
-
-tile_color_dict = {0: '#BDAD9E',
-                   2: '#eee4da',
-                   4: '#ede0c8',
-                   8: '#f2b179',
-                   16: '#f59563',
-                   32: '#f67c5f',
-                   64: '#f65e3b',
-                   128: '#edcf72',
-                   256: '#edcc61',
-                   512: '#edc850',
-                   1024: '#edc53f',
-                   2048: '#edc22e'
-                   }
-
 
 class Graphics(tk.Tk):
-    def __init__(self, bot):
+    def __init__(self, bot, grid):
         super().__init__()
         # window
         # self.window = tk.Tk()
         self.title("2048")
-        # self.grid = grid
-        self.game = None  # Game(4, 2)
+        self.grid = grid
+        # self.game = None  # Game(4, 2)
         self.bot = bot
 
         # labels
@@ -60,23 +33,21 @@ class Graphics(tk.Tk):
 
         self.init_board()
 
-        # buttons
-        self.start_button = tk.Button(self, text="Start Game", command=self.start)
-        self.start_button.grid(column=0, row=1)
-
         self.game_over_frame = tk.Frame(self.background, bg='#776e65',
-                                        width=WINDOW_WIDTH,
-                                        height=WINDOW_HEIGHT)
+                       width=WINDOW_WIDTH,
+                       height=WINDOW_HEIGHT)
 
         self.game_over = tk.Label(self.game_over_frame,
-                                  text='GAME OVER',
-                                  bg='#776e65',
-                                  justify=tk.CENTER,
-                                  font=("Arial", 40),
-                                  width=6,
-                                  height=4)
+                         text='GAME OVER',
+                         bg='#776e65',
+                         justify=tk.CENTER,
+                         font=("Arial", 40),
+                         width=6,
+                         height=4)
 
         self.background.grid()
+        self.display_board(self.grid)
+        self.bind("<Key>", self.take_turn)
 
         # start the window running
         self.mainloop()
@@ -105,7 +76,7 @@ class Graphics(tk.Tk):
         self.game_over_frame.place_forget()
         self.game_over.configure(text='')
 
-        self.game = Bot(BOARD_SIZE, INIT_TILES, True) if self.bot else Game(BOARD_SIZE, INIT_TILES)
+        self.game = Bot(BOARD_SIZE, INIT_TILES) if self.bot else Game(BOARD_SIZE, INIT_TILES)
         self.display_board(self.game.get_board().get_grid())
         # key binding
         self.bind("<Key>", self.take_turn)
@@ -117,10 +88,9 @@ class Graphics(tk.Tk):
         for row in range(BOARD_SIZE):
             for col in range(BOARD_SIZE):
                 if grid[row][col] is not None:
-                    value = grid[row][col].get_value()
-                    self.grid_tiles[row][col].configure(text=str(value), bg=tile_color_dict[value])
+                    self.grid_tiles[row][col].configure(text=str(grid[row][col].get_value()))
                 else:
-                    self.grid_tiles[row][col].configure(text='', bg=tile_color_dict[0])
+                    self.grid_tiles[row][col].configure(text='')
         self.update_idletasks()
 
     def take_turn(self, event):
@@ -133,13 +103,13 @@ class Graphics(tk.Tk):
     def end_game(self):
         print('here')
 
-        self.game_over_frame.place(relheight=1 / 4, relwidth=3 / 4,
-                                   relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.game_over_frame.place(relheight=1/4, relwidth=3/4,
+                  relx=0.5, rely=0.5, anchor=tk.CENTER)
         self.game_over_frame.lift()
         # value.place(anchor=tk.CENTER)
         self.game_over.configure(text='GAME OVER')
         self.game_over.place(relheight=1, relwidth=1,
-                             relx=0.5, rely=0.5, anchor=tk.CENTER)
+                  relx=0.5, rely=0.5, anchor=tk.CENTER)
         # value.grid()
 
 
