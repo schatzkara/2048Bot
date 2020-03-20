@@ -1,6 +1,5 @@
 import random
 from tile import Tile
-import tkinter as tk
 
 
 class Board:
@@ -26,6 +25,10 @@ class Board:
     def get_grid(self):
         return self.grid
 
+    """
+    Determines the value of the highest tile in the grid.
+    @return the value of the highest tile
+    """
     def get_highest_tile(self):
         highest = 0
         for row in range(self.size):
@@ -36,7 +39,7 @@ class Board:
         return highest
 
     """ 
-    Method to initialize the grid. Adds start_tiles tiles to the board.
+    Initializes the grid. Adds start_tiles tiles to the board.
     """
     def init_grid(self):
         # add the correct number of tiles for the starting board
@@ -44,7 +47,7 @@ class Board:
             self.add_tile()
 
     """
-    Method to add a new tile to the board.
+    Adds a new tile to the board.
     Adds either a 2-tile or a 4-tile with probability 0.9 and 0.1, respectively
     """
     def add_tile(self):
@@ -65,7 +68,7 @@ class Board:
         self.grid[x][y] = Tile(value, x, y)
 
     """
-    Method to print grid to the console in a readable way
+    Prints the grid to the console in a readable way.
     """
     def display(self):
         for i in range(self.size):
@@ -79,9 +82,9 @@ class Board:
         print()
 
     """
-    Method to move all the tiles on the board in the designated direction. 
-    @param direction: the direction to move, can only be "left", "right", "up", "down"
-    @param turn: the turn number that the board is on 
+    Moves all the tiles on the board in the designated direction. 
+    @param direction - the direction to move, can only be "left", "right", "up", "down"
+    @param turn - the turn number that the board is on 
     @return a 3-tuple (movesMade, score, self.grid) representing the following:
         movesMade: true if at least one tile was moved, false otherwise
         score: the number of points earned during the turn
@@ -127,10 +130,6 @@ class Board:
         else:
             print("poop")
 
-        # if moved:
-        #     movesMade = True
-        # score += score_delta
-
         return movesMade, mergesMade, score, self.grid
 
     def move_tile(self, tile, direction, turn):
@@ -139,35 +138,38 @@ class Board:
         score = 0
         if tile is not None:
             if direction == "left":
-                # print(tile.get_position())
                 row, col = tile.get_position()
-                i = col - 1
+                i = col - 1  # col to move to
                 #  find furthest left spot we can move to (that's i)
                 while i >= 0 and self.grid[row][i] is None:
                     i -= 1
                     # print(i)
                 new_col = i + 1
-                # print(new_col)
-                # we can merge
-                if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+                # case: we can merge
+                # if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value()
+                # and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+                if i >= 0 and self.can_merge_tiles(tile1=tile, tile2=self.grid[row][i], turn=turn):
+                    # move tile from old position
                     self.grid[row][col] = None
+                    # merge tiles
                     score += tile.merge(turn)
+                    # put tile in new position
                     tile.set_position(row, i)
                     self.grid[row][i] = tile
+                    # reflect that tiles were merged
                     moved = True
                     merges += 1
-                    # print('we mergin')
-                # we can't merge
+                # case: we can't merge
                 else:
-                    # we can't merge sowwy
-                    # shift = i - 1
+                    # case: we can move
                     if col != new_col:
+                        # move tile from old position
                         self.grid[row][col] = None
+                        # put tile in new position
                         tile.set_position(row, new_col)
                         self.grid[row][new_col] = tile
+                        # reflect that tiles were merged
                         moved = True
-
-                # print('done')
 
             elif direction == "right":
                 # print(tile.get_position())
@@ -259,6 +261,12 @@ class Board:
                         moved = True
                 # print('done')
         return moved, merges, score
+
+    def can_merge_tiles(self, tile1, tile2, turn):
+        return tile1 is not None and tile2 is not None and tile1.get_value() == tile2.get_value() and tile1.get_last_merged() != turn and tile2.get_last_merged() != turn
+
+    def mergeable(self, tile, turn):
+        return tile is not None and tile.get_last_merged() != turn
 
     def empty_rowcol(self, arr):
         for i in range(len(arr)):

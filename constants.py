@@ -1,3 +1,13 @@
+WINDOW_HEIGHT = 400
+WINDOW_WIDTH = 400
+BOARD_SIZE = 4
+INIT_TILES = 2
+LOOK_AHEAD = 1
+
+RANDOM = 0
+HIGHSCORE = 1
+MOSTMERGES = 2
+
 text_color_dict = {0: '#BDAD9E',
                    2: '#BDAD9E',
                    4: '#ede0c8',
@@ -12,7 +22,7 @@ text_color_dict = {0: '#BDAD9E',
                    2048: '#f9f6f2'
                    }
 
-tile_color_dict = {0: '#eee4da',
+tile_color_dict = {0: '#BDAD9E',
                    2: '#eee4da',
                    4: '#ede0c8',
                    8: '#f2b179',
