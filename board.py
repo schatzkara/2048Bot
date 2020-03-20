@@ -98,7 +98,8 @@ class Board:
         if direction == "left":
             for row in range(self.size):
                 for col in range(self.size):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, merges, score_delta = self.move_tile_left(tile=self.grid[row][col], turn=turn)
+                    # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
                     mergesMade += merges
@@ -106,7 +107,8 @@ class Board:
         elif direction == "right":
             for row in range(self.size):
                 for col in range(self.size-1, -1, -1):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, merges, score_delta = self.move_tile_right(tile=self.grid[row][col], turn=turn)
+                    # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
                     mergesMade += merges
@@ -114,7 +116,8 @@ class Board:
         elif direction == "up":
             for col in range(self.size):
                 for row in range(self.size):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, merges, score_delta = self.move_tile_up(tile=self.grid[row][col], turn=turn)
+                    # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
                     mergesMade += merges
@@ -122,7 +125,8 @@ class Board:
         elif direction == "down":
             for col in range(self.size):
                 for row in range(self.size-1, -1, -1):
-                    moved, merges, score_delta = self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
+                    moved, merges, score_delta = self.move_tile_down(tile=self.grid[row][col], turn=turn)
+                    # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
                         movesMade = True
                     mergesMade += merges
@@ -132,135 +136,259 @@ class Board:
 
         return movesMade, mergesMade, score, self.grid
 
-    def move_tile(self, tile, direction, turn):
+    def move_tile_left(self, tile, turn):
         moved = False
         merges = 0
         score = 0
         if tile is not None:
-            if direction == "left":
-                row, col = tile.get_position()
-                i = col - 1  # col to move to
-                #  find furthest left spot we can move to (that's i)
-                while i >= 0 and self.grid[row][i] is None:
-                    i -= 1
-                    # print(i)
-                new_col = i + 1
-                # case: we can merge
-                # if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value()
-                # and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
-                if i >= 0 and self.can_merge_tiles(tile1=tile, tile2=self.grid[row][i], turn=turn):
+            row, col = tile.get_position()
+            i = col - 1  # col to move to
+            #  find furthest left spot we can move to (that's i)
+            while i >= 0 and self.grid[row][i] is None:
+                i -= 1
+            new_col = i + 1
+            # case: we can merge
+            if i >= 0 and self.can_merge_tiles(tile1=tile, tile2=self.grid[row][i], turn=turn):
+                # move tile from old position
+                self.grid[row][col] = None
+                # merge tiles
+                score += tile.merge(turn)
+                # put tile in new position
+                tile.set_position(row, i)
+                self.grid[row][i] = tile
+                # reflect that tiles were merged
+                moved = True
+                merges += 1
+            # case: we can't merge
+            else:
+                # case: we can move
+                if col != new_col:
                     # move tile from old position
                     self.grid[row][col] = None
-                    # merge tiles
-                    score += tile.merge(turn)
                     # put tile in new position
-                    tile.set_position(row, i)
-                    self.grid[row][i] = tile
-                    # reflect that tiles were merged
+                    tile.set_position(row, new_col)
+                    self.grid[row][new_col] = tile
+                    # reflect that the tile was moved
                     moved = True
-                    merges += 1
-                # case: we can't merge
-                else:
-                    # case: we can move
-                    if col != new_col:
-                        # move tile from old position
-                        self.grid[row][col] = None
-                        # put tile in new position
-                        tile.set_position(row, new_col)
-                        self.grid[row][new_col] = tile
-                        # reflect that tiles were merged
-                        moved = True
 
-            elif direction == "right":
-                # print(tile.get_position())
-                row, col = tile.get_position()
-                i = col + 1
-                #  find furthest left spot we can move to (that's i)
-                while i < self.size and self.grid[row][i] is None:
-                    i += 1
-                    # print(i)
-                new_col = i - 1
-                # print(new_col)
-                # we can merge
-                if i < self.size and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
-                    self.grid[row][col] = None
-                    score += tile.merge(turn)
-                    tile.set_position(row, i)
-                    self.grid[row][i] = tile
-                    moved = True
-                    merges += 1
-                    # print('we mergin')
-                # we can't merge
-                else:
-                    # we can't merge sowwy
-                    # shift = i - 1
-                    if col != new_col:
-                        self.grid[row][col] = None
-                        tile.set_position(row, new_col)
-                        self.grid[row][new_col] = tile
-                        moved = True
-                # print('done')
+            return moved, merges, score
 
-            elif direction == "up":
-                # print(tile.get_position())
-                row, col = tile.get_position()
-                i = row - 1
-                #  find furthest left spot we can move to (that's i)
-                while i >= 0 and self.grid[i][col] is None:
-                    i -= 1
-                    # print(i)
-                new_row = i + 1
-                # print(new_y)
-                # we can merge
-                if i >= 0 and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+    def move_tile_right(self, tile, turn):
+        moved = False
+        merges = 0
+        score = 0
+        if tile is not None:
+            row, col = tile.get_position()
+            i = col + 1  # col to move to
+            #  find furthest right spot we can move to (that's i)
+            while i < self.size and self.grid[row][i] is None:
+                i += 1
+            new_col = i - 1
+            # case: we can merge
+            if i < self.size and self.can_merge_tiles(tile1=tile, tile2=self.grid[row][i], turn=turn):
+                self.grid[row][col] = None
+                score += tile.merge(turn)
+                tile.set_position(row, i)
+                self.grid[row][i] = tile
+                moved = True
+                merges += 1
+            # we can't merge
+            else:
+                if col != new_col:
                     self.grid[row][col] = None
-                    score += tile.merge(turn)
-                    tile.set_position(i, col)
-                    self.grid[i][col] = tile
+                    tile.set_position(row, new_col)
+                    self.grid[row][new_col] = tile
                     moved = True
-                    merges += 1
-                    # print('we mergin')
-                # we can't merge
-                else:
-                    # we can't merge sowwy
-                    # shift = i - 1
-                    if row != new_row:
-                        self.grid[row][col] = None
-                        tile.set_position(new_row, col)
-                        self.grid[new_row][col] = tile
-                        moved = True
-                # print('done')
 
-            elif direction == "down":
-                # print(tile.get_position())
-                row, col = tile.get_position()
-                i = row + 1
-                #  find furthest left spot we can move to (that's i)
-                while i < self.size and self.grid[i][col] is None:
-                    i += 1
-                    # print(i)
-                new_row = i - 1
-                # print(new_y)
-                # we can merge
-                if i < self.size and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+            return moved, merges, score
+
+    def move_tile_up(self, tile, turn):
+        moved = False
+        merges = 0
+        score = 0
+        if tile is not None:
+            row, col = tile.get_position()
+            i = row - 1  # row to move to
+            #  find furthest up spot we can move to (that's i)
+            while i >= 0 and self.grid[i][col] is None:
+                i -= 1
+            new_row = i + 1
+            # case: we can merge
+            if i >= 0 and self.can_merge_tiles(tile1=tile, tile2=self.grid[i][col], turn=turn):
+                self.grid[row][col] = None
+                score += tile.merge(turn)
+                tile.set_position(i, col)
+                self.grid[i][col] = tile
+                moved = True
+                merges += 1
+            # we can't merge
+            else:
+                if row != new_row:
                     self.grid[row][col] = None
-                    score += tile.merge(turn)
-                    tile.set_position(i, col)
-                    self.grid[i][col] = tile
+                    tile.set_position(new_row, col)
+                    self.grid[new_row][col] = tile
                     moved = True
-                    merges += 1
-                    # print('we mergin')
-                # we can't merge
-                else:
-                    # we can't merge sowwy
-                    # shift = i - 1
-                    if row != new_row:
-                        self.grid[row][col] = None
-                        tile.set_position(new_row, col)
-                        self.grid[new_row][col] = tile
-                        moved = True
-                # print('done')
-        return moved, merges, score
+
+            return moved, merges, score
+
+    def move_tile_down(self, tile, turn):
+        moved = False
+        merges = 0
+        score = 0
+        if tile is not None:
+            row, col = tile.get_position()
+            i = row + 1  # row to move to
+            #  find furthest down spot we can move to (that's i)
+            while i < self.size and self.grid[i][col] is None:
+                i += 1
+            new_row = i - 1
+            # case: we can merge
+            if i < self.size and self.can_merge_tiles(tile1=tile, tile2=self.grid[i][col], turn=turn):
+                self.grid[row][col] = None
+                score += tile.merge(turn)
+                tile.set_position(i, col)
+                self.grid[i][col] = tile
+                moved = True
+                merges += 1
+            # we can't merge
+            else:
+                if row != new_row:
+                    self.grid[row][col] = None
+                    tile.set_position(new_row, col)
+                    self.grid[new_row][col] = tile
+                    moved = True
+
+            return moved, merges, score
+
+    # def move_tile(self, tile, direction, turn):
+    #     moved = False
+    #     merges = 0
+    #     score = 0
+    #     if tile is not None:
+    #         if direction == "left":
+    #             row, col = tile.get_position()
+    #             i = col - 1  # col to move to
+    #             #  find furthest left spot we can move to (that's i)
+    #             while i >= 0 and self.grid[row][i] is None:
+    #                 i -= 1
+    #                 # print(i)
+    #             new_col = i + 1
+    #             # case: we can merge
+    #             # if i >= 0 and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value()
+    #             # and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+    #             if i >= 0 and self.can_merge_tiles(tile1=tile, tile2=self.grid[row][i], turn=turn):
+    #                 # move tile from old position
+    #                 self.grid[row][col] = None
+    #                 # merge tiles
+    #                 score += tile.merge(turn)
+    #                 # put tile in new position
+    #                 tile.set_position(row, i)
+    #                 self.grid[row][i] = tile
+    #                 # reflect that tiles were merged
+    #                 moved = True
+    #                 merges += 1
+    #             # case: we can't merge
+    #             else:
+    #                 # case: we can move
+    #                 if col != new_col:
+    #                     # move tile from old position
+    #                     self.grid[row][col] = None
+    #                     # put tile in new position
+    #                     tile.set_position(row, new_col)
+    #                     self.grid[row][new_col] = tile
+    #                     # reflect that tiles were merged
+    #                     moved = True
+    #
+    #         elif direction == "right":
+    #             # print(tile.get_position())
+    #             row, col = tile.get_position()
+    #             i = col + 1
+    #             #  find furthest left spot we can move to (that's i)
+    #             while i < self.size and self.grid[row][i] is None:
+    #                 i += 1
+    #                 # print(i)
+    #             new_col = i - 1
+    #             # print(new_col)
+    #             # we can merge
+    #             if i < self.size and self.grid[row][i] is not None and self.grid[row][i].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[row][i].get_last_merged() != turn:
+    #                 self.grid[row][col] = None
+    #                 score += tile.merge(turn)
+    #                 tile.set_position(row, i)
+    #                 self.grid[row][i] = tile
+    #                 moved = True
+    #                 merges += 1
+    #                 # print('we mergin')
+    #             # we can't merge
+    #             else:
+    #                 # we can't merge sowwy
+    #                 # shift = i - 1
+    #                 if col != new_col:
+    #                     self.grid[row][col] = None
+    #                     tile.set_position(row, new_col)
+    #                     self.grid[row][new_col] = tile
+    #                     moved = True
+    #             # print('done')
+    #
+    #         elif direction == "up":
+    #             # print(tile.get_position())
+    #             row, col = tile.get_position()
+    #             i = row - 1
+    #             #  find furthest left spot we can move to (that's i)
+    #             while i >= 0 and self.grid[i][col] is None:
+    #                 i -= 1
+    #                 # print(i)
+    #             new_row = i + 1
+    #             # print(new_y)
+    #             # we can merge
+    #             if i >= 0 and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+    #                 self.grid[row][col] = None
+    #                 score += tile.merge(turn)
+    #                 tile.set_position(i, col)
+    #                 self.grid[i][col] = tile
+    #                 moved = True
+    #                 merges += 1
+    #                 # print('we mergin')
+    #             # we can't merge
+    #             else:
+    #                 # we can't merge sowwy
+    #                 # shift = i - 1
+    #                 if row != new_row:
+    #                     self.grid[row][col] = None
+    #                     tile.set_position(new_row, col)
+    #                     self.grid[new_row][col] = tile
+    #                     moved = True
+    #             # print('done')
+    #
+    #         elif direction == "down":
+    #             # print(tile.get_position())
+    #             row, col = tile.get_position()
+    #             i = row + 1
+    #             #  find furthest left spot we can move to (that's i)
+    #             while i < self.size and self.grid[i][col] is None:
+    #                 i += 1
+    #                 # print(i)
+    #             new_row = i - 1
+    #             # print(new_y)
+    #             # we can merge
+    #             if i < self.size and self.grid[i][col] is not None and self.grid[i][col].get_value() == tile.get_value() and tile.get_last_merged() != turn and self.grid[i][col].get_last_merged() != turn:
+    #                 self.grid[row][col] = None
+    #                 score += tile.merge(turn)
+    #                 tile.set_position(i, col)
+    #                 self.grid[i][col] = tile
+    #                 moved = True
+    #                 merges += 1
+    #                 # print('we mergin')
+    #             # we can't merge
+    #             else:
+    #                 # we can't merge sowwy
+    #                 # shift = i - 1
+    #                 if row != new_row:
+    #                     self.grid[row][col] = None
+    #                     tile.set_position(new_row, col)
+    #                     self.grid[new_row][col] = tile
+    #                     moved = True
+    #             # print('done')
+    #     return moved, merges, score
 
     def can_merge_tiles(self, tile1, tile2, turn):
         return tile1 is not None and tile2 is not None and tile1.get_value() == tile2.get_value() and tile1.get_last_merged() != turn and tile2.get_last_merged() != turn

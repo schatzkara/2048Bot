@@ -52,13 +52,18 @@ class Bot(Game):
             keyboard.press(str(direction))
             keyboard.release(str(direction))
 
-    def move_options(self, board_to_move):
-        moves = {}
+    def determine_move_options(self, board_to_move):
+        move_options = {}  # key: direction, value: game state with moved board
         boards = [copy.deepcopy(board_to_move) for x in range(len(self.directions))]
+        # move the current board in each possible direction
         for i in range(len(self.directions)):
+            # move board
             moves_made, merges, score, board = boards[i].move(self.directions[i], self.get_turn()+1)
+            # if valid, store it as a move option
             if moves_made:
-                moves[self.directions[i]] = State(board, self.directions[i], score, merges)  # {'merges': merges, 'score': score, 'board': board}
+                move_options[self.directions[i]] = State(board, self.directions[i], score, merges)  # {'merges': merges, 'score': score, 'board': board}
+
+            # print moved board
             for k in range(4):
                 row = ""
                 for j in range(4):
@@ -69,19 +74,19 @@ class Bot(Game):
                 # print(row)
             # print()
         # return [boards[i].move(directions[i]) for i in range(len(self.directions))]
-        print(moves)
+        print(move_options)
 
-        return moves
+        return move_options
 
     def choose_move_random(self):
-        moves = self.move_options(self.get_board())
+        moves = self.determine_move_options(self.get_board())
         # evals = self.evaluate_moves(moves)
         move = random.randint(0, len(moves) - 1)
         direction = list(moves.keys())[move]
         return direction
 
     # def choose_move_score(self):
-    #     moves = self.move_options()
+    #     moves = self.determine_move_options()
     #     best_move = list(moves.keys())[0]
     #     highest = moves[best_move]['score']
     #     # highest.insert(index=0, object="left")
@@ -96,7 +101,7 @@ class Bot(Game):
 
     def choose_move_score(self):
         # print('here')
-        moves = self.move_options(self.get_board())
+        moves = self.determine_move_options(self.get_board())
         best_moves = []  # [list(moves.keys())[0]]
         highest = 0  # moves[best_moves[0]].get_score()  # ['score']
         # highest.insert(index=0, object="left")
@@ -124,7 +129,7 @@ class Bot(Game):
         for i in range(self.look_ahead):
             next_level_nodes = []
             for node in current_level_nodes:
-                moves = self.move_options(node.get_value().get_board())
+                moves = self.determine_move_options(node.get_value().get_board())
                 for move in moves.keys():
                     state = moves[move]
                     n = Node(label=move, value=state,
@@ -151,7 +156,7 @@ class Bot(Game):
 
     # def make_branch(self, node, look_ahead):
     #     if look_ahead > 0:
-    #         moves = self.move_options(node.get_value().get_board())
+    #         moves = self.determine_move_options(node.get_value().get_board())
     #         root = Node(label="", value=State(self.get_board(), "", 0, 0))
             # for move in moves.keys():
             #     n = Node(label=move, value=moves[move], parent=node)
@@ -161,7 +166,7 @@ class Bot(Game):
         return self.make_tree()
 
     def choose_move_merges(self):
-        moves = self.move_options(self.get_board())
+        moves = self.determine_move_options(self.get_board())
         best_move = list(moves.keys())[0]
         highest = moves[best_move].get_merges()  # ['merges']
         for move in moves.keys():
@@ -174,7 +179,7 @@ class Bot(Game):
         return best_move
 
     def high_corner(self):
-        moves = self.move_options(self.get_board())
+        moves = self.determine_move_options(self.get_board())
         best_move = list(moves.keys())[0]
         for move in moves.keys():
             print(move, moves[move].get_board())  # ['board'])
@@ -216,7 +221,7 @@ class Bot(Game):
 
     # def evaluate_moves(self, moves):
     #     evals = {}
-    #     # moves = move_options()
+    #     # moves = determine_move_options()
     #     for direction in moves.keys():
     #         evals[direction] = self.heuristic(moves[direction])
     #     return evals

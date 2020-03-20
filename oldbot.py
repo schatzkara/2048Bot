@@ -53,7 +53,7 @@ class Bot:
 
     def evaluate_moves(self, moves):
         evals = {}
-        # moves = move_options()
+        # moves = determine_move_options()
         for direction in self.directions:
             evals[direction] = self.heuristic(moves[direction])
         return evals
