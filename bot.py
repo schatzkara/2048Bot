@@ -9,141 +9,120 @@ import keyboard
 
 
 class Bot(Game):
-    def __init__(self, size, start_tiles, look_ahead, heuristic=c.RANDOM, log=False):
+    def __init__(self, size, start_tiles, look_ahead, trials=0, heuristic=c.RANDOM, log=False):
         super().__init__(size, start_tiles)
         self.size = size
         self.start_tiles = start_tiles
         self.look_ahead = look_ahead
+        self.trials = trials
         self.heuristic = heuristic
         self.log = log
         if self.log:
-            self.log_file = 'log_0000.txt'
+            self.log_file = c.LOG_FILES[heuristic]  # 'log_0000.txt'
 
         self.directions = ["left", "right", "up", "down"]
-        # self.heuristics = {0: self.choose_move_random(),
-        #                    1: self.choose_move_score(),
-        #                    2: self.choose_move_merges()}
 
-    # def play(self):
-    #     while not self.game_over():
-    #         direction = self.choose_move()
-    #         self.take_turn(direction)
-    #         keyboard.press(str(direction))
-    #         keyboard.release(str(direction))
+    def __del__(self):
+        self.log_game()
+
+    def log_game(self):
+        self.log_line('look_ahead:{} trials:{} moves:{} highest_tile:{} score:{}'.format(self.look_ahead,
+                                                                                         self.trials,
+                                                                                         super().get_turn(),
+                                                                                         super().get_board().get_highest_tile(),
+                                                                                         super().get_score()))
 
     def log_line(self, line):
         if self.log:
             with open(self.log_file, 'a') as f:
                 f.write(line + '\n')
 
-    def take_turn(self, dummy):
-        if not self.game_over():
-            if self.heuristic == c.RANDOM:
-                direction = self.choose_move_random()
-            elif self.heuristic == c.HIGHSCORE:
-                direction = self.choose_move_score()
-            elif self.heuristic == c.MOSTMERGES:
-                direction = self.choose_move_merges()
-            else:
-                direction = self.choose_move_random()
+    def play(self):
+        while not self.game_over():
+            # direction = self.choose_direction()
+            self.take_turn(None)
+            # keyboard.press(str(direction))
+            # keyboard.release(str(direction))
 
-            self.log_line(str(super().get_turn()) + ': ' + direction)
+    def take_turn(self, _):
+        if not self.game_over():
+            direction = self.choose_direction()
+            # self.log_line(str(super().get_turn()) + ': ' + direction)
             super().take_turn(direction)
             keyboard.press(str(direction))
             keyboard.release(str(direction))
 
-    def determine_move_options(self, board_to_move):
-        move_options = {}  # key: direction, value: game state with moved board
-        boards = [copy.deepcopy(board_to_move) for x in range(len(self.directions))]
-        # move the current board in each possible direction
-        for i in range(len(self.directions)):
-            # move board
-            moves_made, merges, score, board = boards[i].move(self.directions[i], self.get_turn()+1)
-            # if valid, store it as a move option
-            if moves_made:
-                move_options[self.directions[i]] = State(board, self.directions[i], score, merges)  # {'merges': merges, 'score': score, 'board': board}
+    def choose_direction(self):
+        # if self.heuristic == c.RANDOM:
+        #     direction = self.choose_move_random()
+        # elif self.heuristic == c.HIGHSCORE:
+        #     direction = self.choose_move_score_tree()
+        # elif self.heuristic == c.MOSTMERGES:
+        #     direction = self.choose_move_merges()
+        # elif self.heuristic == c.MOSTMERGESAVAIL:
+        #     direction = self.choose_move_merges_avail()
+        # else:
+        #     direction = self.choose_move_random()
+        direction = self.run_trials()
 
-            # print moved board
-            for k in range(4):
-                row = ""
-                for j in range(4):
-                    if board[k][j] is None:
-                        row = row + str(0).ljust(4) + "  "
-                    else:
-                        row = row + str(board[k][j].get_value()).ljust(4) + "  "
-                # print(row)
-            # print()
-        # return [boards[i].move(directions[i]) for i in range(len(self.directions))]
-        print(move_options)
-
-        return move_options
-
-    def choose_move_random(self):
-        moves = self.determine_move_options(self.get_board())
-        # evals = self.evaluate_moves(moves)
-        move = random.randint(0, len(moves) - 1)
-        direction = list(moves.keys())[move]
         return direction
 
-    # def choose_move_score(self):
-    #     moves = self.determine_move_options()
-    #     best_move = list(moves.keys())[0]
-    #     highest = moves[best_move]['score']
-    #     # highest.insert(index=0, object="left")
-    #     for move in moves.keys():
-    #         print(move, moves[move]['score'])
-    #         if moves[move]['score'] > highest:
-    #             highest = moves[move]['score']
-    #             best_move = move
-    #     # sorted_moves = self.sort_moves(moves)
-    #     print(best_move)
-    #     return best_move
+    def run_trials(self):
+        runs = {'left': 0, 'right': 0, 'up': 0, 'down': 0}
+        for x in range(self.trials):
+            direction = self.make_tree()
+            runs[direction] = runs[direction] + 1
 
-    def choose_move_score(self):
-        # print('here')
-        moves = self.determine_move_options(self.get_board())
-        best_moves = []  # [list(moves.keys())[0]]
-        highest = 0  # moves[best_moves[0]].get_score()  # ['score']
-        # highest.insert(index=0, object="left")
-        for move in moves.keys():
-            print(move, moves[move].get_score())  # ['score'])
-            if moves[move].get_score() > highest:  #  moves[move]['score'] > highest:
-                highest = moves[move].get_score()  # ['score']
-                best_moves = [move]
-            elif moves[move].get_score() == highest:
-                best_moves.append(move)
-        # sorted_moves = self.sort_moves(moves)
-        print(best_moves)
+        best = ''
+        most = 0
+        for direction in list(runs.keys()):
+            if runs[direction] > most:
+                best = direction
+                most = runs[direction]
 
-        move = random.randint(0, len(best_moves) - 1)
-        direction = best_moves[move]
-        print(direction)
-        # return best_moves
-        return direction
+        return best
 
     def make_tree(self):
         # tree = Tree(State(self.get_board(), 0, 0))
         current_level_nodes = []
-        root = Node(label="", value=State(self.get_board(), "", 0, 0), sum=0)
+        root = Node(label="", value=State(self.get_board(), "", 0, 0), points=0)
         current_level_nodes.append(root)
+
+        next_level_possible = False
+
+        # make the tree look_ahead levels deep
         for i in range(self.look_ahead):
             next_level_nodes = []
+            # build each node one level deeper
             for node in current_level_nodes:
-                moves = self.determine_move_options(node.get_value().get_board())
+                moves = self.determine_move_options(node.get_value().get_board(), turn_difference=i+1)
+                if len(moves) > 0:
+                    next_level_possible = True
+                # make each new move a child
                 for move in moves.keys():
                     state = moves[move]
                     n = Node(label=move, value=state,
-                             sum=node.get_sum()+state.get_score(), parent=node)
+                             points=node.get_points() + self.get_points(state), parent=node)
                     node.add_child(n)
                     next_level_nodes.append(n)
-            current_level_nodes = next_level_nodes
+            if next_level_possible:
+                current_level_nodes = next_level_nodes
+                next_level_possible = False
+            else:
+                break
 
-        best_node = current_level_nodes[0]
-        best_score = best_node.get_sum()
+        # print(current_level_nodes)
+
+        best_nodes = []  # current_level_nodes[0]
+        best_score = -1  # best_node.get_points()
         for node in current_level_nodes:
-            if node.get_sum() > best_score:
-                best_node = node
-                best_score = node.get_sum()
+            if node.get_points() > best_score:
+                best_nodes = [node]
+                best_score = node.get_points()
+            elif node.get_points() == best_score:
+                best_nodes.append(node)
+
+        best_node = best_nodes[random.randint(0, len(best_nodes) - 1)]
 
         while best_node.get_parent().get_parent() is not None:
             best_node = best_node.get_parent()
@@ -154,39 +133,173 @@ class Bot(Game):
 
         # return Tree(root)
 
-    # def make_branch(self, node, look_ahead):
-    #     if look_ahead > 0:
-    #         moves = self.determine_move_options(node.get_value().get_board())
-    #         root = Node(label="", value=State(self.get_board(), "", 0, 0))
-            # for move in moves.keys():
-            #     n = Node(label=move, value=moves[move], parent=node)
-            #     node.add_child(n)
+    def get_points(self, state):
+        if self.heuristic == c.RANDOM:
+            print("random")
+            points = 0
+        elif self.heuristic == c.HIGHSCORE:
+            print("high score")
+            points = state.get_score()
+        elif self.heuristic == c.MOSTMERGES:
+            print("most merges")
+            points = state.get_merges()
+        elif self.heuristic == c.MOSTMERGESAVAIL:
+            print("most merges avail")
+            points = self.num_available_merges(grid=state.get_board().get_grid())
+        elif self.heuristic == c.HIGHCORNER:
+            print("high corner")
+            if self.value_in_corner(grid=state.get_board().get_grid(),
+                                    value=self.get_highest_tile(state.get_board().get_grid())):
+                points = 1
+            else:
+                points = 0
+        elif self.heuristic == c.MONOTONIC:
+            points = self.num_monotonic(state.get_board().get_grid())
+        elif self.heuristic == c.TWONEAREMPTY:
+            points = self.value_near_empty_space(grid=state.get_board().get_grid(), value=2)
+        elif self.heuristic == c.MULTIATTRIBUTE:
+            print("multi attribute")
+            points = self.score_board_state(state)
+        else:
+            print("rut ro")
+            points = 0
+
+        return points
+
+    def determine_move_options(self, board_to_move, turn_difference):
+        # print(board_to_move)
+        move_options = {}  # key: direction, value: game state with moved board
+        boards = [copy.deepcopy(board_to_move) for x in range(len(self.directions))]
+        # move the current board in each possible direction
+        for i in range(len(self.directions)):
+            # move board
+            moves_made, merges, score = boards[i].move(self.directions[i], self.get_turn() + turn_difference)  # not + 1 so that tree can go further
+            # if valid, store it as a move option
+            if moves_made:
+                boards[i].add_tile()
+                move_options[self.directions[i]] = State(board=boards[i],
+                                                         direction=self.directions[i],
+                                                         score=score,
+                                                         merges=merges)
+        # print(move_options)
+
+        return move_options
+
+    def choose_move_random(self):
+        moves = self.determine_move_options(self.get_board())
+        # evals = self.evaluate_moves(moves)
+        index = random.randint(0, len(moves) - 1)
+        direction = list(moves.keys())[index]
+
+        return direction
+
+    def choose_move_score(self):
+        moves = self.determine_move_options(self.get_board())
+        best_moves = []
+        highest = 0
+        for move in moves.keys():
+            print(move, moves[move].get_score())
+            if moves[move].get_score() > highest:
+                highest = moves[move].get_score()
+                best_moves = [move]
+            elif moves[move].get_score() == highest:
+                best_moves.append(move)
+        print(best_moves)
+
+        # randomly choose one of the best moves
+        index = random.randint(0, len(best_moves) - 1)
+        direction = best_moves[index]
+        print(direction)
+
+        return direction
 
     def choose_move_score_tree(self):
         return self.make_tree()
 
     def choose_move_merges(self):
         moves = self.determine_move_options(self.get_board())
-        best_move = list(moves.keys())[0]
-        highest = moves[best_move].get_merges()  # ['merges']
+        best_moves = []  # list(moves.keys())[0]
+        highest = 0  # moves[best_move].get_merges()  # ['merges']
         for move in moves.keys():
             print(move, moves[move].get_merges())  # ['merges'])
             if moves[move].get_merges() > highest:  # moves[move]['merges'] > highest:
                 highest = moves[move].get_merges()  # ['merges']
-                best_move = move
-        # sorted_moves = self.sort_moves(moves)
-        print(best_move)
-        return best_move
+                best_moves = [move]
+            elif moves[move].get_merges() == highest:
+                best_moves.append(move)
+        print(best_moves)
+
+        # randomly choose one of the best moves
+        index = random.randint(0, len(best_moves) - 1)
+        direction = best_moves[index]
+        print(direction)
+
+        return direction
+
+    def choose_move_merges_tree(self):
+        return self.make_tree()
+
+    def score_board_state(self, state):
+        score = state.get_score() + state.get_merges()
+        if self.value_in_corner(grid=state.get_board(),
+                                value=self.get_highest_tile(state.get_board())):
+            score += c.ATTRIBUTE_SCORES[c.HIGH_TILE_IN_CORNER]
+        grid = state.get_board().get_grid()
+        for i in range(self.size):
+            # row
+            if self.monotonic(grid[i]):
+                score += c.ATTRIBUTE_SCORES[c.MONOTONIC_ROW]
+            # col
+            if self.monotonic([grid[j][i] for j in range(self.size)]):
+                score += c.ATTRIBUTE_SCORES[c.MONOTONIC_ROW]
+        score += self.value_near_empty_space(grid=state.get_board(), value=2)
+        score += self.num_available_merges(grid=state.get_board())
+
+        return score
+
+    def num_monotonic(self, grid):
+        count = 0
+        for i in range(self.size):
+            # row
+            if self.monotonic(grid[i]):
+                count += 1
+            # col
+            if self.monotonic([grid[j][i] for j in range(self.size)]):
+                count += 1
+
+        return count
+
+    def monotonic(self, list):
+        return self.monotonic_increasing(list) or self.monotonic_decreasing(list)
+
+    def monotonic_increasing(self, list):
+        for i in range(1, len(list)):
+            if list[i] is not None and list[i-1] is not None and list[i].get_value() < list[i - 1].get_value():
+                return False
+        return True
+
+    def monotonic_decreasing(self, list):
+        for i in range(1, len(list)):
+            if list [i] is not None and list[i-1] is not None and list[i].get_value() > list[i - 1].get_value():
+                return False
+        return True
 
     def high_corner(self):
-        moves = self.determine_move_options(self.get_board())
-        best_move = list(moves.keys())[0]
+        moves = self.determine_move_options(self.get_board(), turn_difference=1)
+        best_moves = []  # list(moves.keys())[0]
         for move in moves.keys():
             print(move, moves[move].get_board())  # ['board'])
-            if self.value_in_corner(moves[move].get_board(), self.get_highest_tile(moves[move].get_board())):  # self.value_in_corner(moves[move]['board'], self.get_highest_tile(moves[move]['board'])):
-                best_move = move
-        print(best_move)
-        return best_move
+            if self.value_in_corner(grid=moves[move].get_board(),
+                                    value=self.get_highest_tile(moves[move].get_board())):
+                # self.value_in_corner(moves[move]['board'], self.get_highest_tile(moves[move]['board'])):
+                best_moves.append(move)
+        # print(best_moves)
+
+        index = random.randint(0, len(best_moves) - 1)
+        direction = best_moves[index]
+        # print(direction)
+
+        return direction
 
     def get_highest_tile(self, grid):
         highest = 0
@@ -200,21 +313,61 @@ class Bot(Game):
     def value_in_corner(self, grid, value):
         if grid[0][0] is not None and grid[0][0].get_value() == value:
             return True
-        elif grid[self.size-1][0] is not None and grid[self.size-1][0].get_value() == value:
+        elif grid[self.size - 1][0] is not None and grid[self.size - 1][0].get_value() == value:
             return True
-        elif grid[0][self.size-1] is not None and grid[0][self.size-1].get_value() == value:
+        elif grid[0][self.size - 1] is not None and grid[0][self.size - 1].get_value() == value:
             return True
-        elif grid[self.size-1][self.size-1] is not None and grid[self.size-1][self.size-1].get_value() == value:
+        elif grid[self.size - 1][self.size - 1] is not None and grid[self.size - 1][self.size - 1].get_value() == value:
             return True
         else:
             return False
 
+    def value_near_empty_space(self, grid, value):
+        count = 0
+        for row in range(self.size):
+            for col in range(self.size):
+                if grid[row][col] is None:
+                    # check left
+                    if row - 1 > 0 and grid[row-1][col] is not None and grid[row-1][col].get_value() == value:
+                        count += 1
+                    # check right
+                    if row + 1 < self.size and grid[row+1][col] is not None and grid[row+1][col].get_value() == value:
+                        count += 1
+                    # check up
+                    if col - 1 > 0 and grid[row][col-1] is not None and grid[row][col-1].get_value() == value:
+                        count += 1
+                    # check down
+                    if col + 1 < self.size and grid[row][col+1] is not None and grid[row][col+1].get_value() == value:
+                        count += 1
+
+        return count
+
+    def num_available_merges(self, grid):
+        count = 0
+        for row in range(self.size):
+            for col in range(self.size):
+                if grid[row][col] is not None:
+                    value = grid[row][col].get_value()
+                    # check left
+                    if row - 1 > 0 and grid[row-1][col] is not None and grid[row-1][col].get_value() == value:
+                        count += 1
+                    # check right
+                    if row + 1 < self.size and grid[row+1][col] is not None and grid[row+1][col].get_value() == value:
+                        count += 1
+                    # check up
+                    if col - 1 > 0 and grid[row][col-1] is not None and grid[row][col-1].get_value() == value:
+                        count += 1
+                    # check down
+                    if col + 1 < self.size and grid[row][col+1] is not None and grid[row][col+1].get_value() == value:
+                        count += 1
+
+        return count // 2
+
     def game_over(self):
-        # if self.board.dead():
-        #     print("DEADDDDDD")
         if self.board.dead():
-            self.log_line('highest tile: ' + str(super().get_board().get_highest_tile()))
-            self.log_line('score: ' + str(super().get_score()))
+            # self.log_line('highest tile: ' + str(super().get_board().get_highest_tile()))
+            # self.log_line('score: ' + str(super().get_score()))
+            # self.log_game()
             return True
         else:
             return False

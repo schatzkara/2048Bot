@@ -1,5 +1,3 @@
-WINDOW_HEIGHT = 400
-WINDOW_WIDTH = 400
 BOARD_SIZE = 4
 INIT_TILES = 2
 LOOK_AHEAD = 1
@@ -7,6 +5,39 @@ LOOK_AHEAD = 1
 RANDOM = 0
 HIGHSCORE = 1
 MOSTMERGES = 2
+MOSTMERGESAVAIL = 3
+HIGHCORNER = 4
+MONOTONIC = 5
+TWONEAREMPTY = 6
+MULTIATTRIBUTE = 7
+
+HIGH_TILE_IN_CORNER = 0
+MONOTONIC_ROW = 1
+TWO_NEAR_EMPTY_SPACE = 2
+
+ATTRIBUTE_SCORES = {HIGH_TILE_IN_CORNER: 10,
+                    MONOTONIC_ROW: 5,
+                    TWO_NEAR_EMPTY_SPACE: 5}
+
+LOG_FILES = {RANDOM: "log_random.txt",
+             HIGHSCORE: "log_highscore.txt",
+             MOSTMERGES: "log_mostmerges.txt",
+             MOSTMERGESAVAIL: "log_mostmergesavail.txt",
+             HIGHCORNER: "log_highcorner.txt",
+             MONOTONIC: "log_monotonic.txt",
+             TWONEAREMPTY: "log_twonearempty.txt",
+             MULTIATTRIBUTE: "log_multiattribute.txt"}
+
+WINDOW_HEIGHT = 400
+WINDOW_WIDTH = 400
+TITLE_FONT = ("Arial", 30)
+TILE_FONT = ("Arial", 40)
+BOARD_COLOR = '#776e65'
+
+TILE_WIDTH = 4
+TILE_HEIGHT = 2
+TILE_PADX = 5
+TILE_PADY = 5
 
 text_color_dict = {0: '#BDAD9E',
                    2: '#BDAD9E',

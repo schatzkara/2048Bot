@@ -98,6 +98,7 @@ class Board:
         if direction == "left":
             for row in range(self.size):
                 for col in range(self.size):
+                    # if self.grid[row][col] is not None:
                     moved, merges, score_delta = self.move_tile_left(tile=self.grid[row][col], turn=turn)
                     # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
@@ -107,6 +108,7 @@ class Board:
         elif direction == "right":
             for row in range(self.size):
                 for col in range(self.size-1, -1, -1):
+                    # if self.grid[row][col] is not None:
                     moved, merges, score_delta = self.move_tile_right(tile=self.grid[row][col], turn=turn)
                     # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
@@ -116,6 +118,7 @@ class Board:
         elif direction == "up":
             for col in range(self.size):
                 for row in range(self.size):
+                    # if self.grid[row][col] is not None:
                     moved, merges, score_delta = self.move_tile_up(tile=self.grid[row][col], turn=turn)
                     # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
@@ -125,6 +128,7 @@ class Board:
         elif direction == "down":
             for col in range(self.size):
                 for row in range(self.size-1, -1, -1):
+                    # if self.grid[row][col] is not None:
                     moved, merges, score_delta = self.move_tile_down(tile=self.grid[row][col], turn=turn)
                     # self.move_tile(tile=self.grid[row][col], direction=direction, turn=turn)
                     if moved:
@@ -134,7 +138,7 @@ class Board:
         else:
             print("poop")
 
-        return movesMade, mergesMade, score, self.grid
+        return movesMade, mergesMade, score
 
     def move_tile_left(self, tile, turn):
         moved = False
@@ -171,7 +175,7 @@ class Board:
                     # reflect that the tile was moved
                     moved = True
 
-            return moved, merges, score
+        return moved, merges, score
 
     def move_tile_right(self, tile, turn):
         moved = False
@@ -200,7 +204,7 @@ class Board:
                     self.grid[row][new_col] = tile
                     moved = True
 
-            return moved, merges, score
+        return moved, merges, score
 
     def move_tile_up(self, tile, turn):
         moved = False
@@ -229,7 +233,7 @@ class Board:
                     self.grid[new_row][col] = tile
                     moved = True
 
-            return moved, merges, score
+        return moved, merges, score
 
     def move_tile_down(self, tile, turn):
         moved = False
@@ -258,7 +262,7 @@ class Board:
                     self.grid[new_row][col] = tile
                     moved = True
 
-            return moved, merges, score
+        return moved, merges, score
 
     # def move_tile(self, tile, direction, turn):
     #     moved = False

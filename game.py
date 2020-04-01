@@ -26,7 +26,7 @@ class Game:
 
     def take_turn(self, direction):
         self.turn += 1
-        moved, merges, turn_score, board = self.board.move(direction, self.turn)
+        moved, merges, turn_score = self.board.move(direction, self.turn)
         if moved:
             self.board.add_tile()
             self.score += turn_score
@@ -40,7 +40,7 @@ class Game:
             if alternate:
                 self.turn += 1
                 direction = keyboard.read_key()
-                moved, merges, turn_score, board = self.board.move(direction, self.turn)
+                moved, merges, turn_score = self.board.move(direction, self.turn)
                 if moved:
                     self.board.add_tile()
                     self.score += turn_score

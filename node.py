@@ -1,9 +1,9 @@
 
 class Node:
-    def __init__(self, label, value, sum, parent=None, children=[]):
+    def __init__(self, label, value, points, parent=None, children=[]):
         self.label = label
         self.value = value
-        self.sum = sum
+        self.points = points
         self.parent = parent
         self.children = children
 
@@ -13,8 +13,8 @@ class Node:
     def get_value(self):
         return self.value
 
-    def get_sum(self):
-        return self.sum
+    def get_points(self):
+        return self.points
 
     def get_parent(self):
         return self.parent

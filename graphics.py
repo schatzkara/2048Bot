@@ -4,47 +4,9 @@ from bot import Bot
 import constants as c
 import time
 
-# WINDOW_HEIGHT = 400
-# WINDOW_WIDTH = 400
-# BOARD_SIZE = 4
-# INIT_TILES = 2
-# LOOK_AHEAD = 1
-#
-# RANDOM = 0
-# HIGHSCORE = 1
-# MOSTMERGES = 2
-#
-# text_color_dict = {0: '#BDAD9E',
-#                    2: '#BDAD9E',
-#                    4: '#ede0c8',
-#                    8: '#f9f6f2',
-#                    16: '#f9f6f2',
-#                    32: '#f9f6f2',
-#                    64: '#f9f6f2',
-#                    128: '#f9f6f2',
-#                    256: '#f9f6f2',
-#                    512: '#f9f6f2',
-#                    1024: '#f9f6f2',
-#                    2048: '#f9f6f2'
-#                    }
-#
-# tile_color_dict = {0: '#BDAD9E',
-#                    2: '#eee4da',
-#                    4: '#ede0c8',
-#                    8: '#f2b179',
-#                    16: '#f59563',
-#                    32: '#f67c5f',
-#                    64: '#f65e3b',
-#                    128: '#edcf72',
-#                    256: '#edcc61',
-#                    512: '#edc850',
-#                    1024: '#edc53f',
-#                    2048: '#edc22e'
-#                    }
-
 
 class Graphics(tk.Tk):
-    def __init__(self, bot):
+    def __init__(self, bot, heuristic=c.RANDOM, look_ahead=0, trials=0, log=False):
         super().__init__()
         # window
         # self.window = tk.Tk()
@@ -52,16 +14,21 @@ class Graphics(tk.Tk):
         # self.grid = grid
         self.game = None  # Game(4, 2)
         self.bot = bot
+        self.heuristic = heuristic
+        self.look_ahead = look_ahead
+        self.trials = trials
+        self.log = log
 
         # labels
-        label = tk.Label(self, text="2048", font=("Arial", 30))
+        label = tk.Label(self, text="2048", font=c.TITLE_FONT)
         label.grid(column=0, row=0)
 
         # key binding
         # self.bind("<Key>", self.take_turn)
+        # self.bind("<Enter>", self.start)
 
         self.grid_tiles = []
-        self.background = tk.Frame(self, bg='#776e65',
+        self.background = tk.Frame(self, bg=c.BOARD_COLOR,
                                    width=c.WINDOW_WIDTH,
                                    height=c.WINDOW_HEIGHT)
 
@@ -71,15 +38,15 @@ class Graphics(tk.Tk):
         self.start_button = tk.Button(self, text="Start Game", command=self.start)
         self.start_button.grid(column=0, row=1)
 
-        self.game_over_frame = tk.Frame(self.background, bg='#776e65',
+        self.game_over_frame = tk.Frame(self.background, bg=c.BOARD_COLOR,
                                         width=c.WINDOW_WIDTH,
                                         height=c.WINDOW_HEIGHT)
 
         self.game_over = tk.Label(self.game_over_frame,
                                   text='GAME OVER',
-                                  bg='#776e65',
+                                  bg=c.BOARD_COLOR,
                                   justify=tk.CENTER,
-                                  font=("Arial", 40),
+                                  font=c.TILE_FONT,
                                   width=6,
                                   height=4)
 
@@ -93,26 +60,38 @@ class Graphics(tk.Tk):
         for row in range(c.BOARD_SIZE):
             row_tiles = []
             for col in range(c.BOARD_SIZE):
-                tile = tk.Frame(self.background, bg='#BDAD9E',
+                tile = tk.Frame(self.background, bg=c.tile_color_dict[0],
                                 width=c.WINDOW_WIDTH / c.BOARD_SIZE,
                                 height=c.WINDOW_HEIGHT / c.BOARD_SIZE)
-                tile.grid(row=row, column=col, padx=5, pady=5)
+                tile.grid(row=row, column=col,
+                          padx=c.TILE_PADX, pady=c.TILE_PADY)
                 value = tk.Label(tile,
                                  text='',
-                                 bg='#BDAD9E',
+                                 bg=c.tile_color_dict[0],
                                  justify=tk.CENTER,
-                                 font=("Arial", 40),
-                                 width=4,
-                                 height=2)
+                                 font=c.TILE_FONT,
+                                 width=c.TILE_WIDTH,
+                                 height=c.TILE_HEIGHT)
                 value.grid()
                 row_tiles.append(value)
             self.grid_tiles.append(row_tiles)
 
-    def start(self):
-        self.game_over_frame.place_forget()
-        self.game_over.configure(text='')
+    def start(self, *args):
 
-        self.game = Bot(c.BOARD_SIZE, c.INIT_TILES, c.LOOK_AHEAD, c.HIGHSCORE, True) if self.bot else Game(c.BOARD_SIZE, c.INIT_TILES)
+        # self.game_over.master.destroy()
+        self.game_over.place_forget()
+        self.game_over.configure(text=' ')
+        # self.game_over.place(relheight=1, relwidth=1,
+        #                      relx=0.5, rely=0.5, anchor=tk.CENTER)
+        self.game_over_frame.place_forget()
+
+        if self.bot:
+            self.game = Bot(size=c.BOARD_SIZE, start_tiles=c.INIT_TILES,
+                            look_ahead=self.look_ahead, trials=self.trials, heuristic=self.heuristic,
+                            log=self.log)
+        else:
+            self.game = Game(size=c.BOARD_SIZE, start_tiles=c.INIT_TILES)
+
         self.display_board(self.game.get_board().get_grid())
         # key binding
         self.bind("<Key>", self.take_turn)
@@ -125,21 +104,29 @@ class Graphics(tk.Tk):
             for col in range(c.BOARD_SIZE):
                 if grid[row][col] is not None:
                     value = grid[row][col].get_value()
-                    self.grid_tiles[row][col].configure(text=str(value), bg=c.tile_color_dict[value])
+                    self.grid_tiles[row][col].configure(text=str(value),
+                                                        bg=c.tile_color_dict[value])
+                                                        # fg=c.text_color_dict[value])
                 else:
-                    self.grid_tiles[row][col].configure(text='', bg=c.tile_color_dict[0])
+                    self.grid_tiles[row][col].configure(text='',
+                                                        bg=c.tile_color_dict[0])
+                                                        # fg=c.text_color_dict[0])
         self.update_idletasks()
 
     def take_turn(self, event):
         direction = event.keysym.lower()
         # time.sleep(0.5)
-        self.game.take_turn(direction)
-        self.display_board(self.game.get_board().get_grid())
-        if self.game.game_over():
-            self.end_game()
+        try:
+            self.game.take_turn(direction)
+            self.display_board(self.game.get_board().get_grid())
+            if self.game.game_over():
+                self.end_game()
+        except:
+            print('game over')
 
     def end_game(self):
         print('here')
+        del self.game
 
         self.game_over_frame.place(relheight=1 / 4, relwidth=3 / 4,
                                    relx=0.5, rely=0.5, anchor=tk.CENTER)
@@ -151,9 +138,5 @@ class Graphics(tk.Tk):
         # value.grid()
 
 
-if __name__ == "__main__":
-    Graphics(bot=True)
-
-# ADD IN THE TERMINATING CONDITION NOW
-# deactivate the start button when appropriate
-# don't read key clicks until the game has been started
+# if __name__ == "__main__":
+#     Graphics(bot=True, heuristic=c.HIGHSCORE)
