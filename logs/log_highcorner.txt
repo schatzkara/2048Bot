@@ -28,3 +28,8 @@ look_ahead:3 trials:1 moves:265 highest_tile:256 score:3188
 look_ahead:3 trials:1 moves:178 highest_tile:128 score:1720
 look_ahead:3 trials:1 moves:129 highest_tile:64 score:1100
 look_ahead:3 trials:1 moves:136 highest_tile:64 score:1216
+look_ahead:4 trials:1 moves:292 highest_tile:256 score:3388
+look_ahead:4 trials:1 moves:113 highest_tile:64 score:1016
+look_ahead:4 trials:1 moves:138 highest_tile:64 score:1208
+look_ahead:4 trials:1 moves:259 highest_tile:256 score:3164
+look_ahead:4 trials:1 moves:168 highest_tile:128 score:1704

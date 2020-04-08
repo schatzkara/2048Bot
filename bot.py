@@ -19,7 +19,7 @@ class Bot(Game):
         self.log = log
         if self.log:
             self.log_file = c.LOG_FILES[heuristic]  # 'log_0000.txt'
-
+        print(self.log_file)
         self.directions = ["left", "right", "up", "down"]
 
     def __del__(self):
@@ -135,19 +135,19 @@ class Bot(Game):
 
     def get_points(self, state):
         if self.heuristic == c.RANDOM:
-            print("random")
+            # print("random")
             points = 0
         elif self.heuristic == c.HIGHSCORE:
-            print("high score")
+            # print("high score")
             points = state.get_score()
         elif self.heuristic == c.MOSTMERGES:
-            print("most merges")
+            # print("most merges")
             points = state.get_merges()
         elif self.heuristic == c.MOSTMERGESAVAIL:
-            print("most merges avail")
+            # print("most merges avail")
             points = self.num_available_merges(grid=state.get_board().get_grid())
         elif self.heuristic == c.HIGHCORNER:
-            print("high corner")
+            # print("high corner")
             if self.value_in_corner(grid=state.get_board().get_grid(),
                                     value=self.get_highest_tile(state.get_board().get_grid())):
                 points = 1
@@ -158,7 +158,7 @@ class Bot(Game):
         elif self.heuristic == c.TWONEAREMPTY:
             points = self.value_near_empty_space(grid=state.get_board().get_grid(), value=2)
         elif self.heuristic == c.MULTIATTRIBUTE:
-            print("multi attribute")
+            # print("multi attribute")
             points = self.score_board_state(state)
         else:
             print("rut ro")
@@ -240,20 +240,24 @@ class Bot(Game):
         return self.make_tree()
 
     def score_board_state(self, state):
-        score = state.get_score() + state.get_merges()
-        if self.value_in_corner(grid=state.get_board(),
-                                value=self.get_highest_tile(state.get_board())):
-            score += c.ATTRIBUTE_SCORES[c.HIGH_TILE_IN_CORNER]
+        score = 0
         grid = state.get_board().get_grid()
-        for i in range(self.size):
-            # row
-            if self.monotonic(grid[i]):
-                score += c.ATTRIBUTE_SCORES[c.MONOTONIC_ROW]
-            # col
-            if self.monotonic([grid[j][i] for j in range(self.size)]):
-                score += c.ATTRIBUTE_SCORES[c.MONOTONIC_ROW]
-        score += self.value_near_empty_space(grid=state.get_board(), value=2)
-        score += self.num_available_merges(grid=state.get_board())
+        s = state.get_score()
+
+        # 1: score
+        score += state.get_score()
+        # 2: merges
+        score += (state.get_merges() * (s//2))
+        # 3: monotonic
+        score += (self.num_monotonic(grid=grid) * (s//2))
+        # 4: merges avail
+        score += (self.num_available_merges(grid=grid) * (s//2))
+        # 5: two near empty space
+        score += (self.value_near_empty_space(grid=grid, value=2) * (s//2))
+        # 6: high corner
+        if self.value_in_corner(grid=grid,
+                                value=self.get_highest_tile(grid)):
+            score += (s//2)
 
         return score
 
@@ -274,13 +278,13 @@ class Bot(Game):
 
     def monotonic_increasing(self, list):
         for i in range(1, len(list)):
-            if list[i] is not None and list[i-1] is not None and list[i].get_value() < list[i - 1].get_value():
+            if list[i] is not None and list[i-1] is not None and list[i].get_value() <= list[i - 1].get_value():
                 return False
         return True
 
     def monotonic_decreasing(self, list):
         for i in range(1, len(list)):
-            if list [i] is not None and list[i-1] is not None and list[i].get_value() > list[i - 1].get_value():
+            if list [i] is not None and list[i-1] is not None and list[i].get_value() >= list[i - 1].get_value():
                 return False
         return True
 

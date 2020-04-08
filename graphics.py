@@ -25,7 +25,7 @@ class Graphics(tk.Tk):
 
         # key binding
         # self.bind("<Key>", self.take_turn)
-        # self.bind("<Enter>", self.start)
+        self.bind("<s>", self.start)
 
         self.grid_tiles = []
         self.background = tk.Frame(self, bg=c.BOARD_COLOR,
@@ -77,6 +77,9 @@ class Graphics(tk.Tk):
             self.grid_tiles.append(row_tiles)
 
     def start(self, *args):
+        print('here')
+        self.unbind("<s>")
+        self.start_button["state"] = "disable"
 
         # self.game_over.master.destroy()
         self.game_over.place_forget()
@@ -115,7 +118,8 @@ class Graphics(tk.Tk):
 
     def take_turn(self, event):
         direction = event.keysym.lower()
-        # time.sleep(0.5)
+        # input("press enter to continue...")
+        # time.sleep(1)
         try:
             self.game.take_turn(direction)
             self.display_board(self.game.get_board().get_grid())
@@ -137,6 +141,8 @@ class Graphics(tk.Tk):
                              relx=0.5, rely=0.5, anchor=tk.CENTER)
         # value.grid()
 
+        self.bind("<s>", self.start)
+        self.start_button["state"] = "normal"
 
 # if __name__ == "__main__":
 #     Graphics(bot=True, heuristic=c.HIGHSCORE)

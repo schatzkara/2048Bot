@@ -1,3 +1,5 @@
+import os
+
 BOARD_SIZE = 4
 INIT_TILES = 2
 LOOK_AHEAD = 1
@@ -15,18 +17,18 @@ HIGH_TILE_IN_CORNER = 0
 MONOTONIC_ROW = 1
 TWO_NEAR_EMPTY_SPACE = 2
 
-ATTRIBUTE_SCORES = {HIGH_TILE_IN_CORNER: 10,
-                    MONOTONIC_ROW: 5,
-                    TWO_NEAR_EMPTY_SPACE: 5}
+ATTRIBUTE_SCORES = {HIGH_TILE_IN_CORNER: 5,
+                    MONOTONIC_ROW: 20,
+                    TWO_NEAR_EMPTY_SPACE: 10}
 
-LOG_FILES = {RANDOM: "log_random.txt",
-             HIGHSCORE: "log_highscore.txt",
-             MOSTMERGES: "log_mostmerges.txt",
-             MOSTMERGESAVAIL: "log_mostmergesavail.txt",
-             HIGHCORNER: "log_highcorner.txt",
-             MONOTONIC: "log_monotonic.txt",
-             TWONEAREMPTY: "log_twonearempty.txt",
-             MULTIATTRIBUTE: "log_multiattribute.txt"}
+LOG_FILES = {RANDOM: "logs/log_random.txt",
+             HIGHSCORE: "logs/log_highscore.txt",
+             MOSTMERGES: "logs/log_mostmerges.txt",
+             MOSTMERGESAVAIL: "logs/log_mostmergesavail.txt",
+             HIGHCORNER: "logs/log_highcorner.txt",
+             MONOTONIC: "logs/log_monotonic.txt",
+             TWONEAREMPTY: "logs/log_twonearempty.txt",
+             MULTIATTRIBUTE: "logs/log_multiattribute.txt"}
 
 WINDOW_HEIGHT = 400
 WINDOW_WIDTH = 400
