@@ -1,10 +1,11 @@
 
 class State:
-    def __init__(self, board, direction, score, merges):
+    def __init__(self, board, direction, score, merges, turn):
         self.board = board
         self.direction_moved = direction
         self.score = score
         self.merges = merges
+        self.turn = turn
 
     def get_board(self):
         return self.board
@@ -17,3 +18,6 @@ class State:
 
     def get_merges(self):
         return self.merges
+
+    def get_turn(self):
+        return self.turn

@@ -1,5 +1,3 @@
-import os
-
 BOARD_SIZE = 4
 INIT_TILES = 2
 LOOK_AHEAD = 1
@@ -9,9 +7,14 @@ HIGHSCORE = 1
 MOSTMERGES = 2
 MOSTMERGESAVAIL = 3
 HIGHCORNER = 4
+TOPLEFT = 41
+TOPRIGHT = 42
+BOTTOMLEFT = 43
+BOTTOMRIGHT = 44
 MONOTONIC = 5
 TWONEAREMPTY = 6
 MULTIATTRIBUTE = 7
+MULTIATTRIBUTE_TURN = 8
 
 HIGH_TILE_IN_CORNER = 0
 MONOTONIC_ROW = 1
@@ -26,9 +29,14 @@ LOG_FILES = {RANDOM: "logs/log_random.txt",
              MOSTMERGES: "logs/log_mostmerges.txt",
              MOSTMERGESAVAIL: "logs/log_mostmergesavail.txt",
              HIGHCORNER: "logs/log_highcorner.txt",
+             # TOPLEFT: "logs/log_topleft.txt",
+             # TOPRIGHT: "logs/log_topright.txt",
+             # BOTTOMLEFT: "logs/log_bottomleft.txt",
+             # BOTTOMRIGHT: "logs/log_bottomright.txt",
              MONOTONIC: "logs/log_monotonic.txt",
              TWONEAREMPTY: "logs/log_twonearempty.txt",
-             MULTIATTRIBUTE: "logs/log_multiattribute.txt"}
+             MULTIATTRIBUTE: "logs/log_multiattribute.txt",
+             MULTIATTRIBUTE_TURN: "logs/log_multiattribute_turn.txt"}
 
 WINDOW_HEIGHT = 400
 WINDOW_WIDTH = 400

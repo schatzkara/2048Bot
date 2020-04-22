@@ -173,16 +173,16 @@ if __name__ == "__main__":
     print(x)
     y = []
     for heuristic in data.keys():
-        y.append([data[heuristic][l]["highest_tile"] for l in data[heuristic].keys()])
+        y.append([data[heuristic][l]["score"] for l in data[heuristic].keys()])
     print(y)
-    multi_line_plot(x_data=x, y_data=y, title="", x_label="look ahead", y_label="highest tile", line_labels=list(data.keys()))
+    multi_line_plot(x_data=x, y_data=y, title="", x_label="look ahead", y_label="score", line_labels=list(data.keys()))
 
     data = parse_bot_logs_by_trials(look_ahead=3)
     x = [list(data[heuristic].keys()) for heuristic in data.keys()]
     print(x)
     y = []
     for heuristic in data.keys():
-        y.append([data[heuristic][l]["highest_tile"] for l in data[heuristic].keys()])
+        y.append([data[heuristic][l]["score"] for l in data[heuristic].keys()])
     print(y)
-    multi_line_plot(x_data=x, y_data=y, title="", x_label="trials", y_label="highest tile",
+    multi_line_plot(x_data=x, y_data=y, title="", x_label="trials", y_label="score",
                     line_labels=list(data.keys()))
