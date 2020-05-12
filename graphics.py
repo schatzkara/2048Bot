@@ -20,8 +20,24 @@ class Graphics(tk.Tk):
         self.log = log
 
         # labels
-        label = tk.Label(self, text="2048", font=c.TITLE_FONT)
+        self.header = tk.Frame(self, bg=c.BOARD_COLOR,
+                                   width=c.WINDOW_WIDTH,
+                                   height=c.WINDOW_HEIGHT)
+        self.header.grid(column=0, row=0)
+
+        label = tk.Label(self.header, text="2048", font=c.TITLE_FONT)
         label.grid(column=0, row=0)
+
+        dummy = tk.Label(self.header, text="                 ", font=c.TITLE_FONT)
+        dummy.grid(column=1, row=0)
+        dummy.grid(column=2, row=0)
+
+        score_label = tk.Label(self.header, text="Score:", font=c.TITLE_FONT)
+        score_label.grid(column=3, row=0)
+
+        self.score_value = tk.Label(self.header, text="0".ljust(8), font=c.TITLE_FONT)
+        self.score_value.grid(column=4, row=0)
+
 
         # key binding
         # self.bind("<Key>", self.take_turn)
@@ -50,7 +66,7 @@ class Graphics(tk.Tk):
                                   width=6,
                                   height=4)
 
-        self.background.grid()
+        self.background.grid(column=0, row=2)
 
         # start the window running
         self.mainloop()
@@ -116,6 +132,10 @@ class Graphics(tk.Tk):
                                                         # fg=c.text_color_dict[0])
         self.update_idletasks()
 
+    def update_score(self, score):
+        self.score_value.configure(text=str(score).ljust(8))
+        self.update_idletasks()
+
     def take_turn(self, event):
         direction = event.keysym.lower()
         # input("press enter to continue...")
@@ -123,6 +143,7 @@ class Graphics(tk.Tk):
         try:
             self.game.take_turn(direction)
             self.display_board(self.game.get_board().get_grid())
+            self.update_score(self.game.get_score())
             if self.game.game_over():
                 self.end_game()
         except:

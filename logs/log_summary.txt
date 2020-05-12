@@ -1,0 +1,378 @@
+random
+	look_ahead:1
+		moves          mean:115.87    max:224        
+		highest_tile   mean:101.44    max:256        prop_won:0.0   
+		score          mean:1052.0    max:2760       
+highscore
+	look_ahead:1
+		moves          mean:186.04    max:348        
+		highest_tile   mean:197.12    max:512        prop_won:0.0   
+		score          mean:2105.28   max:5052       
+	look_ahead:2
+		moves          mean:480.2     max:906        
+		highest_tile   mean:563.2     max:1024       prop_won:0.0   
+		score          mean:7188.8    max:15464      
+	look_ahead:3
+		moves          mean:783.6     max:1307       
+		highest_tile   mean:952.32    max:2048       prop_won:8.0   
+		score          mean:13261.44  max:25644      
+	look_ahead:4
+		moves          mean:1027.2    max:1663       
+		highest_tile   mean:1351.68   max:2048       prop_won:36.0  
+		score          mean:18643.84  max:32324      
+	look_ahead:5
+		moves          mean:1065.4    max:1754       
+		highest_tile   mean:1310.72   max:2048       prop_won:28.0  
+		score          mean:19170.4   max:34408      
+mostmerges
+	look_ahead:1
+		moves          mean:197.24    max:335        
+		highest_tile   mean:215.04    max:512        prop_won:0.0   
+		score          mean:2303.04   max:4872       
+	look_ahead:2
+		moves          mean:430.12    max:689        
+		highest_tile   mean:491.52    max:1024       prop_won:0.0   
+		score          mean:6228.8    max:11688      
+	look_ahead:3
+		moves          mean:553.08    max:915        
+		highest_tile   mean:665.6     max:1024       prop_won:0.0   
+		score          mean:8572.8    max:15536      
+	look_ahead:4
+		moves          mean:783.2     max:1429       
+		highest_tile   mean:942.08    max:2048       prop_won:4.0   
+		score          mean:13138.88  max:27260      
+	look_ahead:5
+		moves          mean:812.76    max:1421       
+		highest_tile   mean:1044.48   max:2048       prop_won:12.0  
+		score          mean:13962.24  max:27208      
+mostmergesavail
+	look_ahead:1
+		moves          mean:225.48    max:427        
+		highest_tile   mean:248.32    max:512        prop_won:0.0   
+		score          mean:2739.36   max:6344       
+	look_ahead:2
+		moves          mean:277.52    max:514        
+		highest_tile   mean:302.08    max:512        prop_won:0.0   
+		score          mean:3544.64   max:7436       
+	look_ahead:3
+		moves          mean:374.04    max:739        
+		highest_tile   mean:430.08    max:1024       prop_won:0.0   
+		score          mean:5180.0    max:12256      
+	look_ahead:4
+		moves          mean:375.4     max:793        
+		highest_tile   mean:430.08    max:1024       prop_won:0.0   
+		score          mean:5291.68   max:13172      
+	look_ahead:5
+		moves          mean:359.32    max:526        
+		highest_tile   mean:430.08    max:512        prop_won:0.0   
+		score          mean:5033.28   max:7624       
+highcorner
+	look_ahead:1
+		moves          mean:115.08    max:203        
+		highest_tile   mean:80.64     max:256        prop_won:0.0   
+		score          mean:1012.32   max:2416       
+	look_ahead:2
+		moves          mean:154.0     max:260        
+		highest_tile   mean:131.2     max:256        prop_won:0.0   
+		score          mean:1588.64   max:3168       
+	look_ahead:3
+		moves          mean:173.84    max:290        
+		highest_tile   mean:140.8     max:256        prop_won:0.0   
+		score          mean:1833.76   max:3604       
+	look_ahead:4
+		moves          mean:204.56    max:468        
+		highest_tile   mean:160.0     max:512        prop_won:0.0   
+		score          mean:2295.2    max:6836       
+	look_ahead:5
+		moves          mean:212.44    max:487        
+		highest_tile   mean:149.76    max:512        prop_won:0.0   
+		score          mean:2448.32   max:6636       
+monotonic
+	look_ahead:1
+		moves          mean:136.64    max:292        
+		highest_tile   mean:131.84    max:512        prop_won:0.0   
+		score          mean:1365.6    max:4328       
+	look_ahead:2
+		moves          mean:257.6     max:386        
+		highest_tile   mean:253.44    max:512        prop_won:0.0   
+		score          mean:3216.16   max:5528       
+	look_ahead:3
+		moves          mean:387.48    max:695        
+		highest_tile   mean:432.64    max:1024       prop_won:0.0   
+		score          mean:5474.72   max:11888      
+	look_ahead:4
+		moves          mean:513.2     max:844        
+		highest_tile   mean:583.68    max:1024       prop_won:0.0   
+		score          mean:7801.6    max:14460      
+	look_ahead:5
+		moves          mean:685.88    max:1666       
+		highest_tile   mean:788.48    max:2048       prop_won:4.0   
+		score          mean:11250.88  max:32348      
+twonearempty
+	look_ahead:1
+		moves          mean:162.76    max:314        
+		highest_tile   mean:143.36    max:256        prop_won:0.0   
+		score          mean:1688.0    max:4128       
+	look_ahead:2
+		moves          mean:301.08    max:488        
+		highest_tile   mean:341.33    max:512        prop_won:0.0   
+		score          mean:4017.83   max:7040       
+	look_ahead:3
+		moves          mean:430.5     max:818        
+		highest_tile   mean:472.62    max:1024       prop_won:0.0   
+		score          mean:6204.31   max:14172      
+	look_ahead:4
+		moves          mean:559.96    max:874        
+		highest_tile   mean:665.6     max:1024       prop_won:0.0   
+		score          mean:8683.68   max:15160      
+	look_ahead:5
+		moves          mean:673.28    max:988        
+		highest_tile   mean:778.24    max:1024       prop_won:0.0   
+		score          mean:10807.52  max:16660      
+multiattribute
+	look_ahead:1
+		moves          mean:303.28    max:613        
+		highest_tile   mean:378.88    max:1024       prop_won:0.0   
+		score          mean:4222.24   max:10468      
+	look_ahead:2
+		moves          mean:601.96    max:984        
+		highest_tile   mean:686.08    max:1024       prop_won:0.0   
+		score          mean:9466.72   max:16476      
+	look_ahead:3
+		moves          mean:802.2     max:1387       
+		highest_tile   mean:1024.0    max:2048       prop_won:16.0  
+		score          mean:13773.44  max:26644      
+	look_ahead:4
+		moves          mean:1073.44   max:2175       
+		highest_tile   mean:1433.6    max:4096       prop_won:36.0  
+		score          mean:19671.2   max:48924      
+	look_ahead:5
+		moves          mean:1057.48   max:1795       
+		highest_tile   mean:1372.16   max:2048       prop_won:36.0  
+		score          mean:19260.0   max:34756      
+multiattribute_turn
+	look_ahead:1
+		moves          mean:355.68    max:535        
+		highest_tile   mean:391.68    max:512        prop_won:0.0   
+		score          mean:4894.56   max:7976       
+	look_ahead:2
+		moves          mean:705.48    max:1367       
+		highest_tile   mean:870.4     max:2048       prop_won:8.0   
+		score          mean:11727.84  max:26644      
+	look_ahead:3
+		moves          mean:865.52    max:1681       
+		highest_tile   mean:1064.96   max:2048       prop_won:24.0  
+		score          mean:15048.64  max:32520      
+	look_ahead:4
+		moves          mean:994.52    max:1854       
+		highest_tile   mean:1249.28   max:2048       prop_won:28.0  
+		score          mean:17746.72  max:36088      
+	look_ahead:5
+		moves          mean:1215.88   max:2758       
+		highest_tile   mean:1505.88   max:4096       prop_won:35.29 
+		score          mean:22405.41  max:59688      
+random
+	trials:1
+		moves          mean:115.87    max:224        
+		highest_tile   mean:101.44    max:256        prop_won:0.0   
+		score          mean:1052.0    max:2760       
+highscore
+	trials:1
+		moves          mean:783.6     max:1307       
+		highest_tile   mean:952.32    max:2048       prop_won:8.0   
+		score          mean:13261.44  max:25644      
+	trials:2
+		moves          mean:685.93    max:948        
+		highest_tile   mean:819.2     max:1024       prop_won:0.0   
+		score          mean:11209.87  max:16172      
+	trials:4
+		moves          mean:857.87    max:1435       
+		highest_tile   mean:1024.0    max:2048       prop_won:13.33 
+		score          mean:14686.4   max:27264      
+	trials:6
+		moves          mean:842.8     max:1435       
+		highest_tile   mean:989.87    max:2048       prop_won:13.33 
+		score          mean:14372.27  max:27324      
+	trials:8
+		moves          mean:808.13    max:1588       
+		highest_tile   mean:1006.93   max:2048       prop_won:20.0  
+		score          mean:13884.8   max:31528      
+	trials:10
+		moves          mean:768.2     max:956        
+		highest_tile   mean:921.6     max:1024       prop_won:0.0   
+		score          mean:12768.4   max:16192      
+mostmerges
+	trials:1
+		moves          mean:553.08    max:915        
+		highest_tile   mean:665.6     max:1024       prop_won:0.0   
+		score          mean:8572.8    max:15536      
+	trials:2
+		moves          mean:585.67    max:814        
+		highest_tile   mean:733.87    max:1024       prop_won:0.0   
+		score          mean:9262.13   max:14128      
+	trials:4
+		moves          mean:631.47    max:950        
+		highest_tile   mean:785.07    max:1024       prop_won:0.0   
+		score          mean:10146.4   max:16108      
+	trials:6
+		moves          mean:704.73    max:987        
+		highest_tile   mean:802.13    max:1024       prop_won:0.0   
+		score          mean:11377.87  max:16528      
+	trials:8
+		moves          mean:739.73    max:973        
+		highest_tile   mean:853.33    max:1024       prop_won:0.0   
+		score          mean:12155.73  max:16220      
+	trials:10
+		moves          mean:805.0     max:1215       
+		highest_tile   mean:972.8     max:2048       prop_won:10.0  
+		score          mean:13448.4   max:23548      
+mostmergesavail
+	trials:1
+		moves          mean:374.04    max:739        
+		highest_tile   mean:430.08    max:1024       prop_won:0.0   
+		score          mean:5180.0    max:12256      
+	trials:2
+		moves          mean:310.2     max:446        
+		highest_tile   mean:349.87    max:512        prop_won:0.0   
+		score          mean:4128.53   max:6488       
+	trials:4
+		moves          mean:358.8     max:527        
+		highest_tile   mean:384.0     max:512        prop_won:0.0   
+		score          mean:4937.07   max:7508       
+	trials:6
+		moves          mean:358.6     max:761        
+		highest_tile   mean:418.13    max:1024       prop_won:0.0   
+		score          mean:5004.27   max:12616      
+	trials:8
+		moves          mean:392.4     max:739        
+		highest_tile   mean:460.8     max:1024       prop_won:0.0   
+		score          mean:5552.0    max:12304      
+	trials:10
+		moves          mean:400.1     max:701        
+		highest_tile   mean:473.6     max:1024       prop_won:0.0   
+		score          mean:5703.6    max:11768      
+highcorner
+	trials:1
+		moves          mean:173.84    max:290        
+		highest_tile   mean:140.8     max:256        prop_won:0.0   
+		score          mean:1833.76   max:3604       
+	trials:2
+		moves          mean:160.27    max:389        
+		highest_tile   mean:97.07     max:256        prop_won:0.0   
+		score          mean:1605.07   max:4968       
+	trials:4
+		moves          mean:201.0     max:321        
+		highest_tile   mean:142.93    max:256        prop_won:0.0   
+		score          mean:2162.13   max:4136       
+	trials:6
+		moves          mean:194.53    max:447        
+		highest_tile   mean:149.33    max:512        prop_won:0.0   
+		score          mean:2141.6    max:6524       
+	trials:8
+		moves          mean:180.8     max:294        
+		highest_tile   mean:128.0     max:256        prop_won:0.0   
+		score          mean:1926.4    max:3952       
+	trials:10
+		moves          mean:159.5     max:306        
+		highest_tile   mean:108.8     max:256        prop_won:0.0   
+		score          mean:1619.6    max:3816       
+monotonic
+	trials:1
+		moves          mean:387.48    max:695        
+		highest_tile   mean:432.64    max:1024       prop_won:0.0   
+		score          mean:5474.72   max:11888      
+	trials:2
+		moves          mean:341.6     max:673        
+		highest_tile   mean:332.8     max:512        prop_won:0.0   
+		score          mean:4573.07   max:10460      
+	trials:4
+		moves          mean:334.87    max:629        
+		highest_tile   mean:384.0     max:1024       prop_won:0.0   
+		score          mean:4549.33   max:10652      
+	trials:6
+		moves          mean:478.2     max:777        
+		highest_tile   mean:614.4     max:1024       prop_won:0.0   
+		score          mean:7292.0    max:12824      
+	trials:8
+		moves          mean:447.87    max:757        
+		highest_tile   mean:512.0     max:1024       prop_won:0.0   
+		score          mean:6527.47   max:12524      
+	trials:10
+		moves          mean:466.2     max:886        
+		highest_tile   mean:409.6     max:1024       prop_won:0.0   
+		score          mean:6666.0    max:15024      
+twonearempty
+	trials:1
+		moves          mean:430.5     max:818        
+		highest_tile   mean:472.62    max:1024       prop_won:0.0   
+		score          mean:6204.31   max:14172      
+	trials:2
+		moves          mean:482.8     max:918        
+		highest_tile   mean:588.8     max:1024       prop_won:0.0   
+		score          mean:7314.93   max:15852      
+	trials:4
+		moves          mean:467.13    max:757        
+		highest_tile   mean:563.2     max:1024       prop_won:0.0   
+		score          mean:6962.4    max:12500      
+	trials:6
+		moves          mean:561.53    max:898        
+		highest_tile   mean:665.6     max:1024       prop_won:0.0   
+		score          mean:8656.8    max:15072      
+	trials:8
+		moves          mean:447.33    max:714        
+		highest_tile   mean:512.0     max:1024       prop_won:0.0   
+		score          mean:6530.4    max:12028      
+	trials:10
+		moves          mean:633.3     max:860        
+		highest_tile   mean:716.8     max:1024       prop_won:0.0   
+		score          mean:9990.8    max:15032      
+multiattribute
+	trials:1
+		moves          mean:802.2     max:1387       
+		highest_tile   mean:1024.0    max:2048       prop_won:16.0  
+		score          mean:13773.44  max:26644      
+	trials:2
+		moves          mean:748.27    max:1413       
+		highest_tile   mean:921.6     max:2048       prop_won:13.33 
+		score          mean:12613.33  max:27112      
+	trials:4
+		moves          mean:982.27    max:1607       
+		highest_tile   mean:1228.8    max:2048       prop_won:26.67 
+		score          mean:17387.2   max:31724      
+	trials:6
+		moves          mean:977.07    max:1598       
+		highest_tile   mean:1262.93   max:2048       prop_won:26.67 
+		score          mean:17416.0   max:31580      
+	trials:8
+		moves          mean:1269.4    max:1797       
+		highest_tile   mean:1672.53   max:2048       prop_won:66.67 
+		score          mean:23876.53  max:34684      
+	trials:10
+		moves          mean:1126.0    max:1662       
+		highest_tile   mean:1382.4    max:2048       prop_won:40.0  
+		score          mean:20683.6   max:32316      
+multiattribute_turn
+	trials:1
+		moves          mean:865.52    max:1681       
+		highest_tile   mean:1064.96   max:2048       prop_won:24.0  
+		score          mean:15048.64  max:32520      
+	trials:2
+		moves          mean:849.67    max:1359       
+		highest_tile   mean:1109.33   max:2048       prop_won:20.0  
+		score          mean:14804.0   max:26672      
+	trials:4
+		moves          mean:1141.27   max:1676       
+		highest_tile   mean:1536.0    max:2048       prop_won:53.33 
+		score          mean:20996.8   max:32408      
+	trials:6
+		moves          mean:1140.47   max:1799       
+		highest_tile   mean:1365.33   max:2048       prop_won:40.0  
+		score          mean:20624.53  max:34888      
+	trials:8
+		moves          mean:1139.73   max:1885       
+		highest_tile   mean:1433.6    max:2048       prop_won:40.0  
+		score          mean:20763.2   max:36304      
+	trials:10
+		moves          mean:1208.0    max:1670       
+		highest_tile   mean:1536.0    max:2048       prop_won:50.0  
+		score          mean:22184.4   max:32320      

@@ -38,6 +38,7 @@ def parse_bot_logs_by_look_ahead(trials):
     all_data = {}
     log_files = list(c.LOG_FILES.values())
     for file in log_files:
+        print(file)
         heuristic = file[file.index("_") + 1:file.index(".")]
         all_data[heuristic] = {}
         with open(file, mode='r') as g:
@@ -58,11 +59,32 @@ def parse_bot_logs_by_look_ahead(trials):
                 for i in range(2, 5):
                     data[look_ahead][stats[i][0]].append(int(stats[i][1]))
         # print(data)
+
+        with open("logs/log_summary.txt", mode='a') as f:
+            f.write(heuristic + '\n')
+
         for l in list(data.keys()):
+            with open("logs/log_summary.txt", mode='a') as f:
+                f.write("\tlook_ahead:{}\n".format(l))
+
             for stat in list(data[l].keys()):
-                data[l][stat] = np.mean(data[l][stat])
+                results = np.asarray(data[l][stat])
+                mean = round(np.mean(results), 2)
+                max = round(np.amax(results), 2)
+                if stat == 'highest_tile':
+                    prop_won = round(len(results[results >= 2048]) / len(results) * 100, 2)
+                data[l][stat] = mean
+
+                with open("logs/log_summary.txt", mode='a') as f:
+                    f.write("\t\t" + stat.ljust(15))
+                    f.write("mean:{}".format(mean).ljust(15))
+                    f.write("max:{}".format(max).ljust(15))
+                    if stat == 'highest_tile':
+                        f.write("prop_won:{}".format(prop_won).ljust(15))
+                    f.write("\n")
 
         all_data[heuristic] = data
+        print(data)
 
     print(all_data)
     return all_data
@@ -85,18 +107,40 @@ def parse_bot_logs_by_trials(look_ahead):
             for i in range(len(stats)):
                 stats[i] = stats[i].split(":")
             # only specific number of trials
-            if int(stats[0][1]) == look_ahead:
+            if int(stats[0][1]) == look_ahead or heuristic == 'random':
                 trials = int(stats[1][1])
                 if trials not in list(data.keys()):
                     data[trials] = {"moves": [], "highest_tile": [], "score": []}
                 for i in range(2, 5):
                     data[trials][stats[i][0]].append(int(stats[i][1]))
+
         # print(data)
+
+        with open("logs/log_summary.txt", mode='a') as f:
+            f.write(heuristic + '\n')
+
         for t in list(data.keys()):
+            with open("logs/log_summary.txt", mode='a') as f:
+                f.write("\ttrials:{}\n".format(t))
+
             for stat in list(data[t].keys()):
-                data[t][stat] = np.mean(data[t][stat])
+                results = np.asarray(data[t][stat])
+                mean = round(np.mean(results), 2)
+                max = round(np.amax(results), 2)
+                if stat == 'highest_tile':
+                    prop_won = round(len(results[results >= 2048]) / len(results) * 100, 2)
+                data[t][stat] = mean
+
+                with open("logs/log_summary.txt", mode='a') as f:
+                    f.write("\t\t" + stat.ljust(15))
+                    f.write("mean:{}".format(mean).ljust(15))
+                    f.write("max:{}".format(max).ljust(15))
+                    if stat == 'highest_tile':
+                        f.write("prop_won:{}".format(prop_won).ljust(15))
+                    f.write("\n")
 
         all_data[heuristic] = data
+        print(data)
 
     print(all_data)
     return all_data
@@ -167,22 +211,34 @@ def make_subplot(x_data, y_data, title, x_label, y_label):
 
 
 if __name__ == "__main__":
-    # parse_bot_logs()
-    data = parse_bot_logs_by_look_ahead(trials=1)
-    x = [list(data[heuristic].keys()) for heuristic in data.keys()]
-    print(x)
-    y = []
-    for heuristic in data.keys():
-        y.append([data[heuristic][l]["score"] for l in data[heuristic].keys()])
-    print(y)
-    multi_line_plot(x_data=x, y_data=y, title="", x_label="look ahead", y_label="score", line_labels=list(data.keys()))
+    open("logs/log_summary.txt", 'w').close()
 
+    # parse_bot_logs()
+    ''' change? '''
+    data = parse_bot_logs_by_look_ahead(trials=1)
+    for x in [2, 3, 4, 5]:
+        data['random'][x] = data['random'][1]
+
+    x = [list(data[heuristic].keys()) for heuristic in data.keys()]
+    print(x)
+
+    y_axis = "score"
+    y = []
+    for heuristic in data.keys():
+        y.append([data[heuristic][l][y_axis] for l in data[heuristic].keys()])
+    print(y)
+    multi_line_plot(x_data=x, y_data=y, title="", x_label="look ahead", y_label=y_axis, line_labels=list(data.keys()))
+
+    '''change to 4? '''
     data = parse_bot_logs_by_trials(look_ahead=3)
+    for x in [2, 4, 6, 8, 10]:
+        data['random'][x] = data['random'][1]
+
     x = [list(data[heuristic].keys()) for heuristic in data.keys()]
     print(x)
     y = []
     for heuristic in data.keys():
-        y.append([data[heuristic][l]["score"] for l in data[heuristic].keys()])
+        y.append([data[heuristic][l][y_axis] for l in data[heuristic].keys()])
     print(y)
-    multi_line_plot(x_data=x, y_data=y, title="", x_label="trials", y_label="score",
+    multi_line_plot(x_data=x, y_data=y, title="", x_label="trials", y_label=y_axis,
                     line_labels=list(data.keys()))
